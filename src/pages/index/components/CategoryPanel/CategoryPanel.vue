@@ -3,19 +3,20 @@
 import type { CategoryItem } from '@/types/home'
 
 import { ref } from 'vue'
-import { onLoad } from '@dcloudio/uni-app';
-import { getHomeCategoryAPI } from "@/services/home"
+import { onLoad } from '@dcloudio/uni-app'
+import { getHomeCategoryAPI } from '@/services/home'
 
 const activeIndex = ref(0)
 // ! 非空断言主观上排除掉空值情况
-const onChange = (e: any) => activeIndex.value = e.detail!.current
-
+const onChange = (e: any) => (activeIndex.value = e.detail!.current)
 
 const categoryList = ref<CategoryItem[]>([])
 const getHomeCategory = async () => {
   const res = await getHomeCategoryAPI()
   categoryList.value = res.result
 }
+const onSwiper = () => uni.switchTab({ url: '/pages/category/category' })
+
 onLoad(() => {
   getHomeCategory()
 })
@@ -25,28 +26,41 @@ onLoad(() => {
   <view class="carousel">
     <swiper @change="onChange">
       <swiper-item class="swiperItem">
-        <navigator url="/pages/index/index" hover-class="none" class="navigator" v-for="item in categoryList.slice(0, 8)"
-          :key="item.id">
+        <view
+          class="navigator"
+          @tap="onSwiper"
+          v-for="item in categoryList.slice(0, 8)"
+          :key="item.id"
+        >
           <image mode="aspectFill" class="image" :src="item.icon"></image>
           <text>{{ item.name }}</text>
-        </navigator>
+        </view>
       </swiper-item>
       <swiper-item class="swiperItem">
-        <navigator url="/pages/index/index" hover-class="none" class="navigator"
-          v-for="item in categoryList.slice(8, categoryList.length)" :key="item.id">
+        <view
+          class="navigator"
+          @tap="onSwiper"
+          v-for="item in categoryList.slice(8, categoryList.length)"
+          :key="item.id"
+        >
           <image mode="aspectFill" class="image" :src="item.icon"></image>
           <text>{{ item.name }}</text>
-        </navigator>
+        </view>
       </swiper-item>
     </swiper>
     <!-- 指示点 -->
     <view class="indicator">
-      <text v-for="(item, index) in 2" :key="item" class="dot" :class="{ active: index === activeIndex }"></text>
+      <text
+        v-for="(item, index) in 2"
+        :key="item"
+        class="dot"
+        :class="{ active: index === activeIndex }"
+      ></text>
     </view>
   </view>
 </template>
 
-<style  lang="scss">
+<style lang="scss">
 /* 轮播图 */
 .carousel {
   height: 360rpx;
@@ -69,7 +83,7 @@ onLoad(() => {
       height: 8rpx;
       margin: 0 8rpx;
       border-radius: 8rpx;
-      background-color: rgb(178, 190, 195,0.3);
+      background-color: rgb(178, 190, 195, 0.3);
     }
 
     .active {
@@ -83,7 +97,6 @@ onLoad(() => {
     flex-wrap: wrap;
     justify-content: start;
     height: 340rpx;
-
 
     .navigator {
       display: flex;
