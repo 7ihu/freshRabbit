@@ -24,8 +24,6 @@ const onGetphonenumber: UniHelper.ButtonOnGetphonenumber = async (ev) => {
 // 模拟手机号码快捷登录（开发练习）
 const onGetphonenumberSimple = async () => {
   const res = await postLoginWxMinSimpleAPI('17788570774')
-  console.log(res)
-
   loginSuccess(res.result)
 }
 
@@ -55,19 +53,32 @@ const onSubmit = async () => {
 
   loginSuccess(res.result)
 }
-const stateLogin = ref(true)
+const stateLogin = ref(false)
 </script>
 
 <template>
   <view class="viewport">
     <view class="logo">
-      <image src="https://pcapi-xiaotuxian-front-devtest.itheima.net/miniapp/images/logo_icon.png"></image>
+      <image
+        src="https://pcapi-xiaotuxian-front-devtest.itheima.net/miniapp/images/logo_icon.png"
+      ></image>
     </view>
     <view class="login">
       <!-- 网页端表单登录 -->
       <view v-if="stateLogin">
-        <input class="input" type="text" placeholder="请输入用户名/手机号码" v-model="form.account" />
-        <input class="input" type="text" password placeholder="请输入密码" v-model="form.password" />
+        <input
+          class="input"
+          type="text"
+          placeholder="请输入用户名/手机号码"
+          v-model="form.account"
+        />
+        <input
+          class="input"
+          type="text"
+          password
+          placeholder="请输入密码"
+          v-model="form.password"
+        />
         <button class="button phone" @tap="onSubmit">登录</button>
       </view>
 

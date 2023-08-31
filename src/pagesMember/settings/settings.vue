@@ -62,6 +62,7 @@ page {
   background-color: #fff;
   margin-bottom: 20rpx;
   border-radius: 10rpx;
+
   .item {
     line-height: 90rpx;
     padding-left: 10rpx;
@@ -72,19 +73,23 @@ page {
     text-align: left;
     border-radius: 0;
     background-color: #fff;
+
     &::after {
       width: auto;
       height: auto;
       left: auto;
       border: none;
     }
+
     &:first-child {
       border: none;
     }
+
     &::after {
       right: 5rpx;
     }
   }
+
   .arrow::after {
     content: '\e6c2';
     position: absolute;
@@ -103,6 +108,7 @@ page {
   margin-top: 40rpx;
   font-size: 32rpx;
   color: #333;
+
   .button {
     background-color: #fff;
     margin-bottom: 20rpx;

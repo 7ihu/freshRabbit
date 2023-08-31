@@ -3,26 +3,36 @@
 import { onShow } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 import type { AddressItem } from '@/types/address'
+import { useMemberStore } from '@/stores'
+
+const memberStore = useMemberStore()
 
 // 点击关闭弹出层
 const emit = defineEmits<{
   (event: 'close'): void
 }>()
 const jumpAddress = () => {
-  uni.navigateTo({ url: '/pagesMember/address-form/address-form' })
+  uni.navigateTo({ url: '/pagesMember/address/address' })
 }
 const flag = ref(0)
-const items = ref<any>([])
+const items = ref<any>('请选择收货地址')
 const props = defineProps<{
   addressList: AddressItem[]
 }>()
-const iconChecked = (i: number) => {
-  flag.value = i
-  items.value = props.addressList[i]
-  emit('close')
+const iconChecked = (i = 0) => {
+  if (addressState.value) {
+    flag.value = i
+    items.value = props.addressList[i].fullLocation
+    emit('close')
+  }
 }
+const addressState = ref(false)
+onShow(() => {
+  if (memberStore.profile) return (addressState.value = true)
+})
 defineExpose({
   items,
+  iconChecked,
 })
 </script>
 
@@ -33,7 +43,7 @@ defineExpose({
     <!-- 标题 -->
     <view class="title">配送至</view>
     <!-- 内容 -->
-    <view class="content">
+    <view class="content" v-if="addressState">
       <view
         class="item"
         v-for="(item, i) in props.addressList"
@@ -46,7 +56,7 @@ defineExpose({
       </view>
     </view>
     <view class="footer">
-      <view class="button primary" @tap="jumpAddress"> 新建地址 </view>
+      <view class="button primary" @tap="jumpAddress"> 地址管理 </view>
     </view>
   </view>
 </template>
@@ -77,7 +87,6 @@ defineExpose({
 }
 
 .content {
-  min-height: 300rpx;
   max-height: 540rpx;
   overflow: auto;
   padding: 20rpx;

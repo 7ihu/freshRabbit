@@ -8,7 +8,7 @@ import type { AddressItem } from '@/types/address'
 import { postMemberCartAPI } from '@/services/cart'
 import { getGoodsByIdAPI } from '@/services/goods'
 import type { GoodsResult } from '@/types/goods'
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad, onShow } from '@dcloudio/uni-app'
 import { computed, ref } from 'vue'
 import AddressPanel from './components/AddressPanel.vue'
 import ServicePanel from './components/ServicePanel.vue'
@@ -55,6 +55,10 @@ const addressList = ref<AddressItem[]>([])
 // 页面加载
 onLoad(() => {
   getGoodsByIdData()
+  addressPanel.value?.iconChecked()!
+  addressList.value = JSON.parse(uni.getStorageSync('addressList') || '[]')
+})
+onShow(() => {
   addressList.value = JSON.parse(uni.getStorageSync('addressList') || '[]')
 })
 
@@ -120,17 +124,27 @@ const onAddCart = async (ev: SkuPopupEvent) => {
 const onBuyNow = (ev: SkuPopupEvent) => {
   uni.navigateTo({ url: `/pagesOrder/create/create?skuId=${ev._id}&count=${ev.buy_num}` })
 }
-const adressPanel = ref()
+const addressPanel = ref()
+const flag = ref(false)
 </script>
 
 <template>
   <!-- SKU弹窗组件 -->
-  <vk-data-goods-sku-popup v-model="isShowSku" :localdata="localdata" :mode="mode" add-cart-background-color="#FFA868"
-    buy-now-background-color="#27BA9B" ref="skuPopupRef" :actived-style="{
+  <vk-data-goods-sku-popup
+    v-model="isShowSku"
+    :localdata="localdata"
+    :mode="mode"
+    add-cart-background-color="#FFA868"
+    buy-now-background-color="#27BA9B"
+    ref="skuPopupRef"
+    :actived-style="{
       color: '#27BA9B',
       borderColor: '#27BA9B',
       backgroundColor: '#E9F8F5',
-    }" @add-cart="onAddCart" @buy-now="onBuyNow" />
+    }"
+    @add-cart="onAddCart"
+    @buy-now="onBuyNow"
+  />
   <scroll-view enable-back-to-top scroll-y class="viewport">
     <!-- 基本信息 -->
     <view class="goods">
@@ -167,7 +181,7 @@ const adressPanel = ref()
         <view @tap="openPopup('address')" class="item arrow">
           <text class="label">送至</text>
           <text class="text ellipsis">
-            {{ adressPanel ? adressPanel.items!.fullLocation : '请选择收货地址' }}
+            {{ addressPanel?.items ? addressPanel?.items : '请选择收货地址' }}
           </text>
         </view>
         <view @tap="openPopup('service')" class="item arrow">
@@ -191,7 +205,13 @@ const adressPanel = ref()
           </view>
         </view>
         <!-- 图片详情 -->
-        <image class="image" v-for="item in goods?.details.pictures" :key="item" mode="widthFix" :src="item"></image>
+        <image
+          class="image"
+          v-for="item in goods?.details.pictures"
+          :key="item"
+          mode="widthFix"
+          :src="item"
+        ></image>
       </view>
     </view>
 
@@ -201,8 +221,13 @@ const adressPanel = ref()
         <text>同类推荐</text>
       </view>
       <view class="content">
-        <navigator v-for="item in goods?.similarProducts" :key="item.id" class="goods" hover-class="none"
-          :url="`/pages/goods/goods?id=${item.id}`">
+        <navigator
+          v-for="item in goods?.similarProducts"
+          :key="item.id"
+          class="goods"
+          hover-class="none"
+          :url="`/pages/goods/goods?id=${item.id}`"
+        >
           <image class="image" mode="aspectFill" :src="item.picture"></image>
           <view class="name ellipsis">{{ item.name }}</view>
           <view class="price">
@@ -216,8 +241,13 @@ const adressPanel = ref()
           <text>热门推荐</text>
         </view>
         <view class="content" style="padding-bottom: 30rpx">
-          <navigator v-for="item in goods?.hotByDay" :key="item.id" class="goods" hover-class="none"
-            :url="`/pages/goods/goods?id=${item.id}`">
+          <navigator
+            v-for="item in goods?.hotByDay"
+            :key="item.id"
+            class="goods"
+            hover-class="none"
+            :url="`/pages/goods/goods?id=${item.id}`"
+          >
             <image class="image" mode="aspectFill" :src="item.picture" :title="item.desc"></image>
             <view class="name ellipsis">{{ item.name }}</view>
             <view class="price">
@@ -250,8 +280,18 @@ const adressPanel = ref()
   </view>
 
   <!-- uni-ui 弹出层 -->
-  <uni-popup ref="popup" type="bottom" background-color="#fff">
-    <AddressPanel v-if="popupName === 'address'" @close="popup?.close()" :addressList="addressList" ref="adressPanel" />
+  <uni-popup
+    ref="popup"
+    type="bottom"
+    background-color="#fff"
+    style="position: relative; z-index: 1"
+  >
+    <AddressPanel
+      v-show="popupName === 'address'"
+      @close="popup?.close()"
+      :addressList="addressList"
+      ref="addressPanel"
+    />
     <ServicePanel v-if="popupName === 'service'" @close="popup?.close()" />
   </uni-popup>
 </template>
@@ -509,7 +549,7 @@ page {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 999;
+  z-index: 2;
   background-color: #fff;
   height: 100rpx;
   padding: 0 20rpx var(--window-bottom);
@@ -522,7 +562,7 @@ page {
   .buttons {
     display: flex;
 
-    &>view {
+    & > view {
       width: 220rpx;
       text-align: center;
       line-height: 72rpx;

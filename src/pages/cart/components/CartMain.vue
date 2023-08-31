@@ -118,6 +118,9 @@ const gotoPayment = () => {
 
 // 猜你喜欢
 const { guessRef, onScrolltolower } = useGuessList()
+
+// 跳转首页
+const switchIndex = () => uni.switchTab({ url: '/pages/index/index' })
 </script>
 
 <template>
@@ -179,9 +182,9 @@ const { guessRef, onScrolltolower } = useGuessList()
       <view class="cart-blank" v-else>
         <image src="/static/images/blank_cart.png" class="image" />
         <text class="text">购物车还是空的，快来挑选好货吧</text>
-        <navigator url="/pages/index/index" hover-class="none">
+        <view @tap="switchIndex">
           <button class="button">去首页看看</button>
-        </navigator>
+        </view>
       </view>
       <!-- 吸底工具栏 -->
       <view
@@ -399,15 +402,18 @@ const { guessRef, onScrolltolower } = useGuessList()
   align-items: center;
   flex-direction: column;
   height: 60vh;
+
   .image {
     width: 400rpx;
     height: 281rpx;
   }
+
   .text {
     color: #444;
     font-size: 26rpx;
     margin: 20rpx 0;
   }
+
   .button {
     width: 240rpx !important;
     height: 60rpx;
@@ -502,6 +508,7 @@ const { guessRef, onScrolltolower } = useGuessList()
     }
   }
 }
+
 // 底部占位空盒子
 .toolbar-height {
   height: 100rpx;

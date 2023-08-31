@@ -1,17 +1,8 @@
-<script setup lang="ts">
-import { onLaunch, onShow, onHide } from '@dcloudio/uni-app'
+<script setup lang="ts"></script>
 
-onLaunch(() => {
-  console.log('App Launch')
-})
-onShow(() => {
-  console.log('App Show')
-})
-onHide(() => {
-  console.log('App Hide')
-})
-</script>
-
+<template>
+  <view></view>
+</template>
 <style lang="scss">
 // 字体图标
 @import '@/styles/fonts.scss';
