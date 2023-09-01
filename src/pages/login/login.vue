@@ -5,11 +5,10 @@ import type { LoginResult } from '@/types/member'
 import { onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 
-// #ifdef MP-WEIXIN
 // 获取 code 登录凭证
 let code = ''
 onLoad(async () => {
-  const res = await wx.login()
+  const res = await uni.login()
   code = res.code
 })
 
@@ -19,7 +18,6 @@ const onGetphonenumber: UniHelper.ButtonOnGetphonenumber = async (ev) => {
   const res = await postLoginWxMinAPI({ code, encryptedData, iv })
   loginSuccess(res.result)
 }
-// #endif
 
 // 模拟手机号码快捷登录（开发练习）
 const onGetphonenumberSimple = async () => {
@@ -64,7 +62,7 @@ const stateLogin = ref(false)
       ></image>
     </view>
     <view class="login">
-      <!-- 网页端表单登录 -->
+      <!-- 表单登录 -->
       <view v-if="stateLogin">
         <input
           class="input"
@@ -82,9 +80,9 @@ const stateLogin = ref(false)
         <button class="button phone" @tap="onSubmit">登录</button>
       </view>
 
-      <!-- 小程序端授权登录 -->
+      <!-- 授权登录 -->
       <button class="button phone" @tap="onGetphonenumber" v-else>
-        <text class="icon icon-phone"></text> 微信一键登录
+        <text class="icon icon-phone"></text> 手机号一键登录
       </button>
       <view class="extra">
         <view class="caption">
@@ -93,7 +91,7 @@ const stateLogin = ref(false)
         <view class="options">
           <!-- 通用模拟登录 -->
           <button @tap="stateLogin = false" v-if="stateLogin">
-            <text class="icon icon-phone">微信登录</text>
+            <text class="icon icon-phone">一键登录</text>
           </button>
           <button @tap="stateLogin = true" v-else>
             <text class="icon icon-phone">账号登录</text>

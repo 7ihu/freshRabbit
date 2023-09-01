@@ -4,7 +4,7 @@ import { onShow } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 import type { AddressItem } from '@/types/address'
 import { useMemberStore } from '@/stores'
-
+import { useAddressStore } from '@/stores/modules/address'
 const memberStore = useMemberStore()
 
 // 点击关闭弹出层
@@ -19,10 +19,13 @@ const items = ref<any>('请选择收货地址')
 const props = defineProps<{
   addressList: AddressItem[]
 }>()
+
+const addressStore = useAddressStore()
 const iconChecked = (i = 0) => {
   if (addressState.value) {
     flag.value = i
     items.value = props.addressList[i].fullLocation
+    addressStore.changeSelectedAddress(props.addressList[i])
     emit('close')
   }
 }
